@@ -13,8 +13,11 @@ struct ContentView: View {
     
     @State private var showingScore = false
     @State private var resultText = ""
+    @State private var clarificationText = ""
     
     @State private var playerScore = 0
+    @State private var questionNumber = 1
+    let maxQuestionNumber = 8
     
     var body: some View {
         NavigationStack {
@@ -28,8 +31,11 @@ struct ContentView: View {
                 
                 VStack {
                     Spacer()
-                    Text("Guess the Flag")
+                    Text("Guess The Flag")
                         .font(.largeTitle.weight(.bold))
+                    Spacer()
+                    Text("Question \(questionNumber)")
+                        .font(.title)
                     Spacer()
                     
                     VStack(spacing: 25) {
@@ -82,24 +88,14 @@ struct ContentView: View {
                             }
                         }
                         .padding(.horizontal, 10)
-//                        ForEach(0..<4) {number in
-//                            Button {
-//                                isAnswerCorrect(selectedIndex: number)
-//                            } label: {
-//                                Image(countries[number])
-//                                    .clipShape(.capsule)
-//                                    .shadow(radius: 5)
-//                            }
-//                        }
-                        
                         .alert(resultText, isPresented: $showingScore) {
-                            Button("Continue") {nextQuestion()}
+                            Button((questionNumber == maxQuestionNumber) ? "Restart" : "Continue") {nextQuestion()}
                         } message: {
-                            Text("Score: \(playerScore)")
+                            Text(questionNumber == maxQuestionNumber ? readFinalScore() : readPlayerScore())
                         }
                         
                     }
-                    .frame(maxWidth: 350)
+                    .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 20))
@@ -122,16 +118,37 @@ struct ContentView: View {
             playerScore += 1
         } else {
             resultText = "Wrong"
-            if playerScore != 0 {
-                playerScore -= 1
-            }
         }
+        clarificationText = "That's the flag of \(countries[selectedIndex])"
         showingScore = true
     }
     
+    func readPlayerScore() -> String {
+        """
+        \(clarificationText)
+        Score: \(playerScore)
+        """
+    }
+    
+    func readFinalScore() -> String {
+        """
+        \(clarificationText)
+        Final Score: \(Double(playerScore) / Double(maxQuestionNumber) * 100)%
+        """
+    }
+    
     func nextQuestion() {
+        questionNumber += 1
         countries.shuffle()
         correctAnswer = Int.random(in: 0...5)
+        if questionNumber > maxQuestionNumber {
+            restartGame()
+        }
+    }
+    
+    func restartGame() {
+        playerScore = 0
+        questionNumber = 1
     }
 }
 
