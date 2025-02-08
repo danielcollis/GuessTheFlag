@@ -20,7 +20,6 @@ struct ContentView: View {
     let maxQuestionNumber = 8
     
     var body: some View {
-        NavigationStack {
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color(red: 1.0, green: 0.7, blue: 0.3), Color.black]),
@@ -110,7 +109,6 @@ struct ContentView: View {
                 }
                 .padding()
             }
-        }
     }
     func isAnswerCorrect(selectedIndex: Int) {
         if correctAnswer == selectedIndex {
