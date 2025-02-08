@@ -94,7 +94,7 @@ struct ContentView: View {
                         }
                         
                     }
-                    .frame(maxWidth: .infinity)
+//                    .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 20))
